@@ -29,7 +29,7 @@
         "monolog/monolog": "^2.3",
         "php-di/php-di": "^6.3",
         "ramsey/uuid": "^4.2",
-        "slim/pdo": "~1.9",
+        "slim/pdo": "~2.2",
         "slim/psr7": "^1.5",
         "slim/slim": "^4.9"
     },
