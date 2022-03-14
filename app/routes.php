@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Application\Actions\User\ListUsersAction;
 use App\Application\Actions\User\ViewUserAction;
-use App\Application\Middleware\JwtMiddleware;
 use App\Infrastructure\Persistence\User\UserEntity;
 use App\Infrastructure\Persistence\User\UserRepository;
 use FaaPz\PDO\Database;

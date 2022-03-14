@@ -1,3 +1,16 @@
+Создан проект на основе https://www.slimframework.ru/v4.
+Развертывание проекта initdev.sh или make init
+
+Внедрена библиотека https://github.com/thephpleague/oauth2-server
+
+реализованы два метода:
+
+/api/auth/signup - получение токенов через пару username, password
+
+
+/api/oauth/auth - авторизацию через access token полученый через /api/auth/signup
+
+
 # Slim Framework 4 Skeleton Application
 
 [![Coverage Status](https://coveralls.io/repos/github/slimphp/Slim-Skeleton/badge.svg?branch=master)](https://coveralls.io/github/slimphp/Slim-Skeleton?branch=master)
