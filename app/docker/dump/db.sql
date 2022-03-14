@@ -22,14 +22,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE postgres;
---
--- Name: postgres; Type: DATABASE; Schema: -; Owner: user
---
-
-CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
-
-
 ALTER DATABASE postgres OWNER TO "user";
 
 \connect postgres
@@ -227,47 +219,6 @@ ALTER TABLE ONLY public.oauth_clients ALTER COLUMN id SET DEFAULT nextval('publi
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
-
---
--- Data for Name: oauth_access_tokens; Type: TABLE DATA; Schema: public; Owner: user
---
-
-COPY public.oauth_access_tokens (id, user_id, client_id, scopes, revoked, expires_at) FROM stdin;
-\.
-COPY public.oauth_access_tokens (id, user_id, client_id, scopes, revoked, expires_at) FROM '$$PATH$$/2991.dat';
-
---
--- Data for Name: oauth_auth_codes; Type: TABLE DATA; Schema: public; Owner: user
---
-
-COPY public.oauth_auth_codes (id, user_id, client_id, scopes, revoked, expires_at) FROM stdin;
-\.
-COPY public.oauth_auth_codes (id, user_id, client_id, scopes, revoked, expires_at) FROM '$$PATH$$/2994.dat';
-
---
--- Data for Name: oauth_clients; Type: TABLE DATA; Schema: public; Owner: user
---
-
-COPY public.oauth_clients (id, user_id, name, secret, provider, redirect, personal_access_client, password_client, revoked, created_at, updated_at) FROM stdin;
-\.
-COPY public.oauth_clients (id, user_id, name, secret, provider, redirect, personal_access_client, password_client, revoked, created_at, updated_at) FROM '$$PATH$$/2990.dat';
-
---
--- Data for Name: oauth_refresh_tokens; Type: TABLE DATA; Schema: public; Owner: user
---
-
-COPY public.oauth_refresh_tokens (id, access_token_id, revoked, expires_at) FROM stdin;
-\.
-COPY public.oauth_refresh_tokens (id, access_token_id, revoked, expires_at) FROM '$$PATH$$/2992.dat';
-
---
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: user
---
-
-COPY public.users (id, username, first_name, last_name, token, password, created_at, updated_at) FROM stdin;
-\.
-COPY public.users (id, username, first_name, last_name, token, password, created_at, updated_at) FROM '$$PATH$$/2988.dat';
-
 --
 -- Name: oauth_auth_codes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
@@ -304,6 +255,11 @@ ALTER TABLE ONLY public.oauth_access_tokens
 ALTER TABLE ONLY public.oauth_refresh_tokens
     ADD CONSTRAINT oauth_refresh_tokens_pk PRIMARY KEY (id);
 
+insert into oauth_clients (id, user_id, name, secret, provider, redirect, personal_access_client, password_client, revoked, created_at, updated_at)
+values (1,1,'auth',null,null,'/home',null,null,false,current_timestamp,null);
+
+insert into users (id, username, first_name, last_name, token, password, created_at, updated_at)
+values (1,'admin','admin','', null,'$2y$10$jcQwX3Ce//mlArVrnePMZ.aSBOl8Evzzdhsa/eYtMuLplj00a0cv2',current_timestamp,null);
 
 --
 -- PostgreSQL database dump complete

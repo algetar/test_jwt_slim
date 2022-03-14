@@ -90,8 +90,6 @@ class User implements JsonSerializable, ModelInterface
         return password_verify($password, $this->password);
     }
 
-    #[ArrayShape(['id' => 'int|null','username' => 'string','firstName' => 'string','lastName' => 'string'])]
-    #[ReturnTypeWillChange]
     public function jsonSerialize(): array
     {
         return [
@@ -103,12 +101,12 @@ class User implements JsonSerializable, ModelInterface
     }
 
     /**
-     * @param array $data
+     * @param array|null $data
      * @return User|User[]|null
      */
-    public static function createFromArray(array $data)
+    public static function createFromArray(?array $data)
     {
-        if ($data == []) {
+        if ($data == null) {
             return null;
         }
 

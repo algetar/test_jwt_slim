@@ -35,8 +35,9 @@ class AuthCodeRepository extends BaseRepository implements AuthCodeRepositoryInt
         }
 
         $authCode = AuthCode::createFromArray([
+            'id' => $authCodeEntity->getIdentifier(),
             'user_id' => $authCodeEntity->getUserIdentifier(),
-            'client_id' => $authCodeEntity->getIdentifier(),
+            'client_id' => $authCodeEntity->getClient()->getIdentifier(),
             'scopes' => $authCodeEntity->getScopes(),
             'revoked' => false,
             'expires_at' => $authCodeEntity->getExpiryDateTime(),

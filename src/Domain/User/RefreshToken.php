@@ -114,6 +114,12 @@ class RefreshToken implements ModelInterface
             'expires_at' => $this->getExpiresAt()->format('Y-m-d H:i:s'),
         ])->into($this->table);
 
-        $statement->execute();
+        try {
+            $statement->execute();
+        } catch (Exception $e) {
+            if ($e->getCode() != 55000) {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
+        }
     }
 }

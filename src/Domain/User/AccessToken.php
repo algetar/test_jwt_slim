@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\User;
 
 use DateTime;
+use Exception;
 use FaaPz\PDO\Database;
 
 class AccessToken
@@ -133,6 +134,9 @@ class AccessToken
         $statement->execute();
     }
 
+    /**
+     * @throws Exception
+     */
     public function insert(Database $db)
     {
         $statement = $db->insert([
@@ -143,6 +147,13 @@ class AccessToken
             'expires_at' => $this->getExpiresAt()->format('Y-m-d H:i:s'),
         ])->into($this->table);
 
-        $statement->execute();
+        try {
+            $statement->execute();
+        } catch (Exception $e) {
+            if ($e->getCode() != 55000) {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
+        }
     }
 }
+

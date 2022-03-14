@@ -3,28 +3,28 @@ declare(strict_types=1);
 
 namespace App\Domain\User;
 
-use DateTime;
+use DateTimeImmutable;
 use Exception;
 use FaaPz\PDO\Database;
 
 class AuthCode implements ModelInterface
 {
-    private int $id;
+    private string $id;
     private int $userId;
     private int $clientId;
     private array $scopes;
     private bool $revoked;
-    private DateTime $expiresAt;
+    private DateTimeImmutable $expiresAt;
     private array $willUpdate = [];
     private string $table = 'oauth_auth_codes';
 
     public function __construct(
-        int $id,
+        string $id,
         int $userId,
         int $clientId,
         array $scopes,
         bool $revoked,
-        DateTime $expires_at
+        DateTimeImmutable $expires_at
     ) {
         $this->id = $id;
         $this->userId = $userId;
@@ -35,9 +35,9 @@ class AuthCode implements ModelInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }
@@ -82,9 +82,9 @@ class AuthCode implements ModelInterface
     }
 
     /**
-     * @return DateTime
+     * @return DateTimeImmutable
      */
-    public function getExpiresAt(): DateTime
+    public function getExpiresAt(): DateTimeImmutable
     {
         return $this->expiresAt;
     }
@@ -92,20 +92,22 @@ class AuthCode implements ModelInterface
     /**
      * @throws Exception
      */
-    public static function createFromArray(array $data)
+    public static function createFromArray(?array $data)
     {
-        if ($data == []) {
+        if ($data == null) {
             return null;
         }
 
         if (($data['id'] ?? null) !== null) {
             return new AuthCode(
                 $data['id'],
-                $data['user_id'],
-                $data['client_id'],
-                json_decode($data['scopes']),
+                (int) $data['user_id'],
+                (int) $data['client_id'],
+                $data['scopes'] ? json_decode($data['scopes']) : [],
                 $data['revoked'],
-                new DateTime($data['expires_at']),
+                ($data['expires_at'] instanceof \DateTimeImmutable) ?
+                    $data['expires_at'] :
+                    new DateTimeImmutable($data['expires_at']),
             );
         }
 
@@ -152,10 +154,15 @@ class AuthCode implements ModelInterface
             'user_id' => $this->getUserId(),
             'client_id' => $this->getClientId(),
             'scopes' => json_encode($this->getScopes()),
-            'revoked' => $this->isRevoked(),
             'expires_at' => $this->getExpiresAt()->format('Y-m-d H:i:s'),
         ])->into($this->table);
 
-        $statement->execute();
+        try {
+            $statement->execute();
+        } catch (Exception $e) {
+            if ($e->getCode() != 55000) {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
+        }
     }
 }
